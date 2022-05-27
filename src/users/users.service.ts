@@ -10,18 +10,36 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
-  create(createUserDto: CreateUserDto) {
-    return `This action adds a new user${this.usersRepository}`;
+  async create(createUserDto: CreateUserDto) {
+    let data = {
+      "firstName": createUserDto.firstName,
+      "lastName": createUserDto.lastName,
+      "email": createUserDto.email,
+      "creatPassword": createUserDto.creatPassword
+    }
+    
+    try {
+      let response = await this.usersRepository.save(data)
+      return `Create successfull`;
+    } catch {
+      return `Error`;
+    }
   }
 
   findAll() {
-    return `This action returns all users`;
+    return  this.usersRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOneBy(email: string) {
+    return this.usersRepository.findOne({ where: { email: email } });
+
+  }
+
+  findOne(email: string) {
+    return this.usersRepository.findOne(email);
+
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
